@@ -64,6 +64,21 @@ void keyboard_handler(struct regs *r)
     {
         /* You can use this one to see if the user released the
         *  shift, alt, or control keys... */
+
+			/* Algorithm to display numbers on the screen */
+			int p = 1, c = 0, s = 0;
+			while(scancode > p) {
+				c = scancode % (p*10) - s;
+				s += c;
+				c /= p;
+				//putch((char) (c + 48)); /* TODO: digits are inverted
+				p *= 10;
+			}
+		
+		/* Release Shift */
+		if(scancode == 170 || scancode == 182) {
+			toggleShift();
+		}
     }
     else
     {
@@ -79,9 +94,25 @@ void keyboard_handler(struct regs *r)
         *  to the above layout to correspond to 'shift' being
         *  held. If shift is held using the larger lookup table,
         *  you would add 128 to the scancode when you look for it */
+
+		/* Move Cursor */
+		if(scancode == 72) {
+			csrUp();
+		} else if(scancode == 80) {
+			csrDown();
+		}
+	  	else if(scancode == 75) {
+			csrToLeft();
+		}
+		else if(scancode == 77) {
+			csrToRight();
+
+		/* Shift */
+		} else if(scancode == 58) toggleShift();
+		else if((scancode == 42 || scancode == 54) && getShiftState() == 0) toggleShift(); // Shift-Key pressed
         putch(kbdus[scancode]);
     }
-}
+}	
 
 /* Installs the keyboard handler into IRQ1 */
 void keyboard_install()

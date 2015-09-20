@@ -10,6 +10,7 @@
 unsigned short *textmemptr;
 int attrib = 0x0F;
 int csr_x = 0, csr_y = 0;
+int shift = 0;
 
 /* Scrolls the screen */
 void scroll(void)
@@ -59,6 +60,20 @@ void move_csr(void)
     outportb(0x3D5, temp);
 }
 
+/* Move Cursor */
+void csrToLeft() {
+	csr_x--;
+}
+void csrToRight() {
+	csr_x++;
+}
+void csrUp() {
+	csr_y--;
+}
+void csrDown() {
+	csr_y++;
+}
+
 /* Clears the screen */
 void cls()
 {
@@ -81,16 +96,29 @@ void cls()
     move_csr();
 }
 
+/* Shift and unshift characters */
+void toggleShift() {
+	if(shift) shift = 0; else shift = 1;
+}
+
+/* Will characters be shifted up? */
+int getShiftState() {
+	return shift;
+}
+
 /* Puts a single character on the screen */
 void putch(unsigned char c)
 {
     unsigned short *where;
     unsigned att = attrib << 8;
 
-    /* Handle a backspace, by moving the cursor back one space */
+    /* Handle a backspace, by moving the cursor back one space 
+     * and delete the character there */
     if(c == 0x08)
     {
         if(csr_x != 0) csr_x--;
+        where = textmemptr + (csr_y * 80 + csr_x);
+        *where = ' ' | att;	/* Character AND attributes: color */
     }
     /* Handles a tab by incrementing the cursor's x, but only
     *  to a point that will make it divisible by 8 */
@@ -113,13 +141,16 @@ void putch(unsigned char c)
         csr_y++;
     }
     /* Any character greater than and including a space, is a
+
     *  printable character. The equation for finding the index
     *  in a linear chunk of memory can be represented by:
+
     *  Index = [(y * width) + x] */
     else if(c >= ' ')
     {
         where = textmemptr + (csr_y * 80 + csr_x);
-        *where = c | att;	/* Character AND attributes: color */
+	if(shift) *where = (c - 32) | att;	/* Character AND attributes: color */
+	else *where = c | att;	/* Character AND attributes: color */
         csr_x++;
     }
 

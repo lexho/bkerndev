@@ -60,7 +60,7 @@ void main()
 
     __asm__ __volatile__ ("sti");
 
-    puts("Hello World!\n");
+    puts("Welcome to my Kernel!\n");
 
 //    i = 10 / 0;
 //    putch(i);
