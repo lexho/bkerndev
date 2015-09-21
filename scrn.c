@@ -8,7 +8,8 @@
 /* These define our textpointer, our background and foreground
 *  colors (attributes), and x and y cursor coordinates */
 unsigned short *textmemptr;
-int attrib = 0x0F;
+//int attrib = 0x0F; // black background and white text
+int attrib = 0x1F; // blue background and white text
 int csr_x = 0, csr_y = 0;
 int shift = 0;
 
@@ -72,6 +73,22 @@ void csrUp() {
 }
 void csrDown() {
 	csr_y++;
+}
+void csrTo(int y, int x) {
+	csr_x = x; csr_y = y;
+	move_csr();
+}
+int getCsrX() {
+	return csr_x;
+}
+
+int getCsrY() {
+	return csr_y;
+}
+
+/* Set Text and Background Color */
+void setColor(const unsigned c) {
+	attrib = c;
 }
 
 /* Clears the screen */

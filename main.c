@@ -59,8 +59,18 @@ void main()
     keyboard_install();
 
     __asm__ __volatile__ ("sti");
-
-    puts("Welcome to my Kernel!\n");
+	csrTo(3,10);
+	setColor(0x4F);
+	puts("==========================================================\n");
+	csrTo(4,10);
+    	puts("         +++         Welcome  to  my         +++          \n");
+	csrTo(5,10);
+	puts("     ++++++  H O M E B R E W   K E R N E L !  +++++       \n");
+	csrTo(6,10);
+	puts("==========================================================\n");
+	//while(getCsrX() < 70) putch(' ');	
+	setColor(0x1F);
+	csrTo(8,0);
 
 //    i = 10 / 0;
 //    putch(i);
