@@ -235,7 +235,7 @@ _isr18:
     push byte 18
     jmp isr_common_stub
 
-; 19: Reserved
+; 19: Reserved (int13h floppy device?)
 _isr19:
     cli
     push byte 0

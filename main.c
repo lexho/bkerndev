@@ -46,17 +46,36 @@ void outportb (unsigned short _port, unsigned char _data)
     __asm__ __volatile__ ("outb %1, %0" : : "dN" (_port), "a" (_data));
 }
 
+ 
+#define CMOS_PORT_ADDRESS 0x70
+#define CMOS_PORT_DATA    0x71
+ 
+/**
+ * Liest ein Byte aus den CMOS
+ *  @param offset Offset im CMOS
+ *  @return Gelesener Wert
+ */
+int cmos_read(int offset) {
+  int tmp = inportb(CMOS_PORT_ADDRESS);
+  outportb(CMOS_PORT_ADDRESS, (tmp & 0x80) | (offset & 0x7F));
+	int bcd = inportb(CMOS_PORT_DATA);
+ int formatted = ( (bcd & 0xF0) >> 1) + ( (bcd & 0xF0) >> 3) + (bcd & 0xf);
+  return formatted;
+}
+
 void main()
 {
     int i;
 
-    gdt_install();
-    idt_install();
-    isrs_install();
-    irq_install();
-    init_video();
-    timer_install();
-    keyboard_install();
+	gdt_install();
+	idt_install();
+	isrs_install();
+	irq_install();
+	init_video();
+	timer_install();
+	keyboard_install();
+	file_install();
+	outportb(0x0B, 0b00000111); // config CMOS
 
     __asm__ __volatile__ ("sti");
 	csrTo(3,10);
@@ -71,9 +90,8 @@ void main()
 	//while(getCsrX() < 70) putch(' ');	
 	setColor(0x1F);
 	csrTo(8,0);
-
-//    i = 10 / 0;
-//    putch(i);
+	csrTo(10,0);
+    	puts("\tTime: ");
 
     for (;;);
 }

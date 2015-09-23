@@ -140,10 +140,15 @@ unsigned char *exception_messages[] =
 *  happening and messing up kernel data structures */
 void fault_handler(struct regs *r)
 {
+
+	puts("Interrupt ");
+	putint(r->int_no);
+
     if (r->int_no < 32)
     {
         puts(exception_messages[r->int_no]);
         puts(" Exception. System Halted!\n");
         for (;;);
     }
+	puts("\n");
 }

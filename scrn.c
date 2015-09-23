@@ -195,6 +195,43 @@ void puts(unsigned char *text)
     }
 }
 
+/* Uses the above routine to output an integer number */
+void putint(int number) {
+	int p = 1, c = 0, s = 0, i = 0;
+	char string[10];
+	if(number < 10) { putch('0'); putch((char) (number + 48));
+	} else {
+		while(number >= p) {
+			c = number % (p*10) - s;
+			s += c;
+			c /= p;
+			string[i] = (char) (c + 48);
+			//putch((char) (c + 48)); /* TODO: digits are inverted
+			p *= 10;
+			i++;
+		}
+		for(i--; i >= 0; i--) putch((char) string[i]);
+	}
+}
+
+void putbin(int number) {
+	int p = 1, c = 0, s = 0, i = 0;
+	char string[16];
+	if(number < 2) putch( (char) (number + 48));
+	else {
+		while(number >= p) {
+			c = number % (p*2) - s;
+			s += c;
+			c /= p;
+			string[i] = (char) (c + 48);
+			//putch((char) (c + 48)); /* TODO: digits are inverted
+			p *= 2;
+			i++;
+		}
+		for(i--; i >= 0; i--) putch (string[i]);
+	}
+}
+
 /* Sets the forecolor and backcolor that we will use */
 void settextcolor(unsigned char forecolor, unsigned char backcolor)
 {

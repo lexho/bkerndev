@@ -1,7 +1,7 @@
 all: kernel.bin
 
-kernel.bin: start.o main.o scrn.o gdt.o idt.o isrs.o irq.o timer.o kb.o
-	/home/alex/os/kernel/i686-elf-4.9.1-Linux-x86_64/bin/i686-elf-ld -T link.ld -o kernel.bin start.o main.o scrn.o gdt.o idt.o isrs.o irq.o timer.o kb.o
+kernel.bin: start.o main.o scrn.o gdt.o idt.o isrs.o irq.o timer.o kb.o files.o math.o
+	/home/alex/os/kernel/i686-elf-4.9.1-Linux-x86_64/bin/i686-elf-ld -T link.ld -o kernel.bin start.o main.o scrn.o gdt.o idt.o isrs.o irq.o timer.o kb.o files.o math.o
 
 start.o: start.asm
 	nasm -f elf32 -o start.o start.asm
@@ -29,6 +29,13 @@ timer.o: timer.c
 
 kb.o: kb.c
 	/home/alex/os/kernel/i686-elf-4.9.1-Linux-x86_64/bin/i686-elf-gcc -Wall -O -fstrength-reduce -fomit-frame-pointer -finline-functions -nostdinc -std=c99 -fno-builtin -I./include -c -o kb.o kb.c
+
+files.o: files.c
+	/home/alex/os/kernel/i686-elf-4.9.1-Linux-x86_64/bin/i686-elf-gcc -Wall -O -fstrength-reduce -fomit-frame-pointer -finline-functions -nostdinc -std=c99 -fno-builtin -I./include -c -o files.o files.c
+
+math.o: math.c
+	/home/alex/os/kernel/i686-elf-4.9.1-Linux-x86_64/bin/i686-elf-gcc -Wall -O -fstrength-reduce -fomit-frame-pointer -finline-functions -nostdinc -std=c99 -fno-builtin -I./include -c -o math.o math.c
+
 
 .PHONY: clean
 clean:
